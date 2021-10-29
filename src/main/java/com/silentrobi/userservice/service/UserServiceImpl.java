@@ -10,6 +10,7 @@ import com.silentrobi.userservice.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +43,10 @@ public class UserServiceImpl implements UserService{
         var oldUser = userRepository.findOneByEmail(user.getEmail());
         if(oldUser != null) throw new AlreadyExistException();
 
+        final String uri = String.format("https://api.agify.io/?name=%s", userDto.getName());
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseUserInfo result = restTemplate.getForObject(uri, ResponseUserInfo.class);
+
         return userRepository.save(user);
     }
 
@@ -50,7 +55,7 @@ public class UserServiceImpl implements UserService{
 
         var currentUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException());
 
-        //currentUser.setEmail(userDto.getEmail()); //can't update email
+        //update email disallowed
         currentUser.setName(userDto.getName());
         currentUser.setAge(userDto.getAge());
         currentUser.setPhoneNumber(userDto.getPhoneNumber());
