@@ -1,16 +1,17 @@
 package com.silentrobi.userservice.controller;
 
-import com.silentrobi.userservice.dto.UpsertUserDto;
-import com.silentrobi.userservice.dto.UserDto;
+import com.silentrobi.userservice.dto.CreateUserDto;
+import com.silentrobi.userservice.dto.UpdateUserDto;
 import com.silentrobi.userservice.exception.AlreadyExistException;
 import com.silentrobi.userservice.exception.NotFoundException;
-import com.silentrobi.userservice.model.User;
 import com.silentrobi.userservice.repository.UserRepository;
 import com.silentrobi.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity createUser(@RequestBody UpsertUserDto userDto) throws AlreadyExistException {
+    public ResponseEntity createUser(@Valid @RequestBody CreateUserDto userDto) throws AlreadyExistException {
         return new ResponseEntity(userService.createUser(userDto), HttpStatus.CREATED);
     }
 
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @PutMapping("users/{id}")
-    public ResponseEntity updateUser(@PathVariable(name = "id") UUID id, @RequestBody UpsertUserDto userDto) throws NotFoundException {
+    public ResponseEntity updateUser(@PathVariable(name = "id") UUID id, @Valid @RequestBody UpdateUserDto userDto) throws NotFoundException {
         return new ResponseEntity( userService.updateUser(id, userDto), HttpStatus.OK);
     }
 

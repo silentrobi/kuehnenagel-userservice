@@ -1,6 +1,7 @@
 package com.silentrobi.userservice.service;
 
-import com.silentrobi.userservice.dto.UpsertUserDto;
+import com.silentrobi.userservice.dto.UpdateUserDto;
+import com.silentrobi.userservice.dto.CreateUserDto;
 import com.silentrobi.userservice.dto.UserDto;
 import com.silentrobi.userservice.exception.AlreadyExistException;
 import com.silentrobi.userservice.exception.NotFoundException;
@@ -19,8 +20,10 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ModelMapper modelMapper;
+
     @Override
     public List<UserDto> getAllUsers() {
         return userRepository.findAll().stream().map(this :: convertModelToDto).collect(Collectors.toList());
@@ -33,7 +36,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User createUser(UpsertUserDto userDto) {
+    public User createUser(CreateUserDto userDto) {
+
         var user = modelMapper.map(userDto, User.class);
         var oldUser = userRepository.findOneByEmail(user.getEmail());
         if(oldUser != null) throw new AlreadyExistException();
@@ -42,14 +46,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUser(UUID id, UpsertUserDto userDto) {
-        var user = modelMapper.map(userDto, User.class);
+    public User updateUser(UUID id, UpdateUserDto userDto) {
+
         var currentUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException());
 
-        currentUser.setEmail(user.getEmail());
-        currentUser.setName(user.getName());
-        currentUser.setAge(user.getAge());
-        currentUser.setPhoneNumber(user.getPhoneNumber());
+        //currentUser.setEmail(userDto.getEmail()); //can't update email
+        currentUser.setName(userDto.getName());
+        currentUser.setAge(userDto.getAge());
+        currentUser.setPhoneNumber(userDto.getPhoneNumber());
 
         return userRepository.save(currentUser);
     }
@@ -62,8 +66,5 @@ public class UserServiceImpl implements UserService{
 
     private UserDto convertModelToDto(User user){
        return modelMapper.map(user, UserDto.class);
-    }
-    private User convertDtoToModel(UserDto userDto){
-        return modelMapper.map(userDto, User.class);
     }
 }
