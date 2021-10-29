@@ -1,5 +1,7 @@
 package com.silentrobi.userservice.controller;
 
+import com.silentrobi.userservice.dto.UpsertUserDto;
+import com.silentrobi.userservice.dto.UserDto;
 import com.silentrobi.userservice.exception.AlreadyExistException;
 import com.silentrobi.userservice.exception.NotFoundException;
 import com.silentrobi.userservice.model.User;
@@ -27,8 +29,8 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity createUser(@RequestBody User user) throws AlreadyExistException {
-        return new ResponseEntity(userService.createUser(user), HttpStatus.CREATED);
+    public ResponseEntity createUser(@RequestBody UpsertUserDto userDto) throws AlreadyExistException {
+        return new ResponseEntity(userService.createUser(userDto), HttpStatus.CREATED);
     }
 
     @GetMapping("users/{id}")
@@ -37,8 +39,8 @@ public class UserController {
     }
 
     @PutMapping("users/{id}")
-    public ResponseEntity updateUser(@PathVariable(name = "id") UUID id, @RequestBody User user) throws NotFoundException {
-        return new ResponseEntity( userService.updateUser(id, user), HttpStatus.OK);
+    public ResponseEntity updateUser(@PathVariable(name = "id") UUID id, @RequestBody UpsertUserDto userDto) throws NotFoundException {
+        return new ResponseEntity( userService.updateUser(id, userDto), HttpStatus.OK);
     }
 
     @DeleteMapping("users/{id}")

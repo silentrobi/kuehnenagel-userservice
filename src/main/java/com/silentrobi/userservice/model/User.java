@@ -3,11 +3,13 @@ package com.silentrobi.userservice.model;
 import java.util.UUID;
 import javax.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+@EqualsAndHashCode(callSuper = true)
+public class User extends BaseModel {
     @Id
     @Column(name = "id")
     @GeneratedValue
