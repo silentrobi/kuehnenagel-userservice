@@ -2,9 +2,8 @@ package com.silentrobi.userservice.controller;
 
 import com.silentrobi.userservice.dto.CreateUserDto;
 import com.silentrobi.userservice.dto.UpdateUserDto;
-import com.silentrobi.userservice.exception.AlreadyExistException;
+import com.silentrobi.userservice.exception.EmailAlreadyExistException;
 import com.silentrobi.userservice.exception.NotFoundException;
-import com.silentrobi.userservice.model.User;
 import com.silentrobi.userservice.repository.UserRepository;
 import com.silentrobi.userservice.service.UserService;
 import org.slf4j.Logger;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -37,9 +34,8 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity createUser(@Valid @RequestBody CreateUserDto userDto) throws ExecutionException, InterruptedException {
-        var result = userService.createUserAsync(userDto).get();
-        return new ResponseEntity(result, HttpStatus.CREATED);
+    public ResponseEntity createUser(@Valid @RequestBody CreateUserDto userDto) throws EmailAlreadyExistException {
+        return new ResponseEntity(userService.createUser(userDto), HttpStatus.CREATED);
     }
 
     @GetMapping("users/{id}")

@@ -10,7 +10,7 @@ public class UpdateUserDto {
     private String name;
 
     @Min(0)
-    @NotEmpty(message = "age is required")
+    @NotNull(message = "age is required")
     private int age;
 
     @NotEmpty(message = "phoneNumber is required")

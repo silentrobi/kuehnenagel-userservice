@@ -4,15 +4,13 @@ import com.silentrobi.userservice.dto.UpdateUserDto;
 import com.silentrobi.userservice.dto.CreateUserDto;
 import com.silentrobi.userservice.dto.UserDto;
 import com.silentrobi.userservice.model.User;
-
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public interface UserService {
     List<UserDto> getAllUsers();
     UserDto getUserById(UUID id);
-    CompletableFuture<User> createUserAsync(CreateUserDto dto);
+    User createUser(CreateUserDto dto);
     User updateUser(UUID id, UpdateUserDto dto);
     void deleteUser(UUID id);
 }

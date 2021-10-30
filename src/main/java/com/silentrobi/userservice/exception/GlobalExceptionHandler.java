@@ -1,6 +1,5 @@
 package com.silentrobi.userservice.exception;
 
-import com.silentrobi.userservice.controller.UserController;
 import com.silentrobi.userservice.exception.errorModel.ErrorStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -25,9 +23,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(ErrorStatus.NOT_FOUND.getError(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = AlreadyExistException.class)
+    @ExceptionHandler(value = EmailAlreadyExistException.class)
     public ResponseEntity alreadyExistException() {
-        return new ResponseEntity(ErrorStatus.ALREADY_EXIST.getError(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(ErrorStatus.EMAIL_ALREADY_EXIST.getError(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = Exception.class)
@@ -45,19 +43,5 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(value = ExecutionException.class)
-    public ResponseEntity handleExecutionExecption(
-            ExecutionException ex) {
-        ResponseEntity exception = null;
-        if (ex.getCause() instanceof AlreadyExistException) {
-            exception = alreadyExistException();
-        } else if (ex.getCause() instanceof NotFoundException) {
-            exception = notFoundException();
-        } else {
-            exception = generalException();
-        }
-        return exception;
     }
 }
