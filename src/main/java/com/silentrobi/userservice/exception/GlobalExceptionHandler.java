@@ -1,6 +1,9 @@
 package com.silentrobi.userservice.exception;
 
+import com.silentrobi.userservice.controller.UserController;
 import com.silentrobi.userservice.exception.errorModel.ErrorStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -10,21 +13,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(value = NotFoundException.class)
-    public ResponseEntity notFoundException(NotFoundException notFoundException) {
+    public ResponseEntity notFoundException() {
         return new ResponseEntity(ErrorStatus.NOT_FOUND.getError(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = AlreadyExistException.class)
-    public ResponseEntity alreadyExistException(AlreadyExistException alreadyExistException) {
+    public ResponseEntity alreadyExistException() {
         return new ResponseEntity(ErrorStatus.ALREADY_EXIST.getError(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<Object> generalException(Exception exception) {
+    public ResponseEntity<Object> generalException() {
         return new ResponseEntity(ErrorStatus.GENERAL_ERROR.getError(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -38,5 +45,19 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = ExecutionException.class)
+    public ResponseEntity handleExecutionExecption(
+            ExecutionException ex) {
+        ResponseEntity exception = null;
+        if (ex.getCause() instanceof AlreadyExistException) {
+            exception = alreadyExistException();
+        } else if (ex.getCause() instanceof NotFoundException) {
+            exception = notFoundException();
+        } else {
+            exception = generalException();
+        }
+        return exception;
     }
 }
