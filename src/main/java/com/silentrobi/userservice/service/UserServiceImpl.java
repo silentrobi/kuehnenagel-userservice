@@ -5,15 +5,17 @@ import com.silentrobi.userservice.dto.CreateUserDto;
 import com.silentrobi.userservice.dto.UserDto;
 import com.silentrobi.userservice.exception.AlreadyExistException;
 import com.silentrobi.userservice.exception.NotFoundException;
+import com.silentrobi.userservice.externalApi.response.ResponseUserInfo;
 import com.silentrobi.userservice.model.User;
 import com.silentrobi.userservice.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +39,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User createUser(CreateUserDto userDto) {
+    @Async
+    public CompletableFuture<User> createUserAsync(CreateUserDto userDto) {
 
         var user = modelMapper.map(userDto, User.class);
         var oldUser = userRepository.findOneByEmail(user.getEmail());
@@ -45,9 +48,11 @@ public class UserServiceImpl implements UserService{
 
         final String uri = String.format("https://api.agify.io/?name=%s", userDto.getName());
         RestTemplate restTemplate = new RestTemplate();
-        ResponseUserInfo result = restTemplate.getForObject(uri, ResponseUserInfo.class);
+        ResponseUserInfo userInfo = restTemplate.getForObject(uri, ResponseUserInfo.class);
 
-        return userRepository.save(user);
+        user.setAge(userInfo.getAge());
+
+        return CompletableFuture.completedFuture(userRepository.save(user));
     }
 
     @Override
@@ -55,7 +60,7 @@ public class UserServiceImpl implements UserService{
 
         var currentUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException());
 
-        //update email disallowed
+        //update email is disallowed
         currentUser.setName(userDto.getName());
         currentUser.setAge(userDto.getAge());
         currentUser.setPhoneNumber(userDto.getPhoneNumber());

@@ -4,6 +4,7 @@ import com.silentrobi.userservice.dto.CreateUserDto;
 import com.silentrobi.userservice.dto.UpdateUserDto;
 import com.silentrobi.userservice.exception.AlreadyExistException;
 import com.silentrobi.userservice.exception.NotFoundException;
+import com.silentrobi.userservice.model.User;
 import com.silentrobi.userservice.repository.UserRepository;
 import com.silentrobi.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -30,8 +32,11 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity createUser(@Valid @RequestBody CreateUserDto userDto) throws AlreadyExistException {
-        return new ResponseEntity(userService.createUser(userDto), HttpStatus.CREATED);
+    public ResponseEntity createUser(@Valid @RequestBody CreateUserDto userDto) throws Exception {
+        CompletableFuture<User> user = userService.createUserAsync(userDto);
+        CompletableFuture.allOf(user).join();
+
+        return new ResponseEntity(user.get(), HttpStatus.CREATED);
     }
 
     @GetMapping("users/{id}")

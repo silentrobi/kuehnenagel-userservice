@@ -13,9 +13,6 @@ public class CreateUserDto {
     @Email(message = "invalid email")
     private String email;
 
-    @DecimalMin(value = "0")
-    private int age;
-
-    @Max(15)
+    @NotEmpty(message = "phoneNumber is required")
     private String phoneNumber;
 }

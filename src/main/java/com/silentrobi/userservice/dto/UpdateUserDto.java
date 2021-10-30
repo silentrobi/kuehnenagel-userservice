@@ -9,9 +9,10 @@ public class UpdateUserDto {
     @NotEmpty(message = "name is required")
     private String name;
 
-    @DecimalMin(value = "0")
+    @Min(0)
+    @NotEmpty(message = "age is required")
     private int age;
 
-    @Max(15)
+    @NotEmpty(message = "phoneNumber is required")
     private String phoneNumber;
 }
