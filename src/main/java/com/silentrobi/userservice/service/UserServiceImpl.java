@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @CacheEvict(value = "users", allEntries = true)
     public User createUser(CreateUserDto userDto) {
+
         var user = modelMapper.map(userDto, User.class);
         var oldUser = userRepository.findOneByEmail(user.getEmail());
         if (oldUser != null) throw new EmailAlreadyExistException();
