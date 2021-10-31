@@ -2,6 +2,8 @@
 
 ## Project Setup
 - Requires`DB_USER_NAME` and `DB_PASSWORD` environment variables.
+
+- Run springboot project `mvn spring-boot:run`
 ## Endpoints
 
 - CREATE USER `POST /api/v1/users`
