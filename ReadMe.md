@@ -1,5 +1,7 @@
 # Springboot - User CRUD MicroService
 
+## Project Setup
+- Requires`DB_USER_NAME` and `DB_PASSWORD` environment variables.
 ## Endpoints
 
 - CREATE USER `POST /api/v1/users`
