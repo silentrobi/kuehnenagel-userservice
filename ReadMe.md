@@ -2,7 +2,7 @@
 
 ## Project Setup
 - Requires`DB_USER_NAME` and `DB_PASSWORD` environment variables.
-
+- Requires Java 11 +
 - Run springboot project `mvn spring-boot:run`
 ## Endpoints
 
