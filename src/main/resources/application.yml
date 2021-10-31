@@ -11,5 +11,6 @@ spring:
       ddl-auto: validate
   liquibase:
     change-log: classpath:db/changelog/changelog-root.xml
-    enabled: true
+    enabled: false
+    drop-first: true
 trace: true
