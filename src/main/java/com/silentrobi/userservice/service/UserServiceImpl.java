@@ -1,5 +1,6 @@
 package com.silentrobi.userservice.service;
 
+import com.silentrobi.userservice.controller.UserController;
 import com.silentrobi.userservice.dto.UpdateUserDto;
 import com.silentrobi.userservice.dto.CreateUserDto;
 import com.silentrobi.userservice.dto.UserDto;
@@ -9,6 +10,8 @@ import com.silentrobi.userservice.externalApi.response.ResponseUserInfo;
 import com.silentrobi.userservice.model.User;
 import com.silentrobi.userservice.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,6 +31,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Override
     @Cacheable("users")
     public List<UserDto> getAllUsers() {
@@ -44,7 +49,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @CacheEvict(value = "users", allEntries = true)
     public User createUser(CreateUserDto userDto) {
-
         var user = modelMapper.map(userDto, User.class);
         var oldUser = userRepository.findOneByEmail(user.getEmail());
         if (oldUser != null) throw new EmailAlreadyExistException();
