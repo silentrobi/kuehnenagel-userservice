@@ -6,7 +6,6 @@
     ```json
       {
         "name": "sample",
-        "age": 27,
         "email": "sample@test.com",
         "phoneNumber": "+90xxxxxxxx"
       }
@@ -31,3 +30,4 @@
   - PostgreSQL
   - H2
   - Liquibase
+
