@@ -97,7 +97,7 @@
                 <configuration>
                     <!--set values for Liquibase properties and settings
                     for example, the location of a properties file to use-->
-                    <propertyFile>src/main/resources/liquibase.properties</propertyFile>
+                    <propertyFile>src/main/resources/application.yml</propertyFile>
                 </configuration>
             </plugin>
         </plugins>
