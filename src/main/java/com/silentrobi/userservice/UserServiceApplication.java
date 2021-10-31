@@ -1,7 +1,6 @@
 package com.silentrobi.userservice;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.CacheManager;
